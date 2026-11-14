@@ -110,3 +110,13 @@
   .discover-button{min-height:34px;padding:7px 9px;font-size:9px}
   .map-detection-panel{top:99px;right:9px;width:225px;padding:10px}
 }
+
+@media(max-width:650px){
+  .map-panel:has(.map-detection-panel) .map-selected-card{
+    display:none;
+  }
+  .map-detection-panel{
+    width:calc(100% - 18px);
+    right:9px;
+  }
+}
