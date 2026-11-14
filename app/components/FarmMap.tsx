@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   ZoomControl,
   useMap,
+  useMapEvents,
 } from "react-leaflet";
 import type { Map as LeafletMap, LatLngExpression } from "leaflet";
 import { Check, LoaderCircle, Map as MapIcon, PencilLine, Satellite, Search, X } from "lucide-react";
@@ -47,10 +48,12 @@ type FarmMapProps = {
 function MapBridge({ mapRef }: { mapRef: React.MutableRefObject<LeafletMap | null> }) {
   const map = useMap();
 
-  useState(() => {
+  useEffect(() => {
     mapRef.current = map;
-    return null;
-  });
+    return () => {
+      if (mapRef.current === map) mapRef.current = null;
+    };
+  }, [map, mapRef]);
 
   return null;
 }
@@ -62,11 +65,12 @@ function MapClickHandler({
   drawing: boolean;
   onPoint: (point: [number, number]) => void;
 }) {
-  const map = useMap();
-  map.on("click", (event) => {
-    if (drawing) {
-      onPoint([event.latlng.lat, event.latlng.lng]);
-    }
+  useMapEvents({
+    click(event) {
+      if (drawing) {
+        onPoint([event.latlng.lat, event.latlng.lng]);
+      }
+    },
   });
 
   return null;
@@ -357,11 +361,6 @@ export default function FarmMap({
           />
         ))}
       </MapContainer>
-
-      <div className="map-search-chip">
-        <Search size={14} />
-        <span>حرّك الخريطة إلى أرضك أولًا</span>
-      </div>
 
       <div className="map-layer-switch" aria-label="نوع الخريطة">
         <button
