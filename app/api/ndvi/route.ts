@@ -106,8 +106,9 @@ function summarize(response: StatsResponse) {
       const stats = entry.outputs?.data?.bands?.B0?.stats;
       if (!stats || typeof stats.mean !== "number") return null;
 
-      const total = (stats.sampleCount ?? 0) + (stats.noDataCount ?? 0);
-      const valid = stats.sampleCount ?? 0;
+      const total = stats.sampleCount ?? 0;
+      const excluded = stats.noDataCount ?? 0;
+      const valid = Math.max(0, total - excluded);
 
       return {
         from: entry.interval?.from ?? "",
