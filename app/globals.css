@@ -5,3 +5,36 @@
 @media(min-width:1400px){.main-area{padding:30px 42px}.dashboard-grid{grid-template-columns:minmax(0,1.8fr) minmax(360px,1fr)}}
 @media(max-width:1000px){.main-area{padding:20px 18px}.dashboard-grid{grid-template-columns:1fr}.map-panel,.map-frame,.farm-map,.map-loading{min-height:470px;height:470px}.left-column{display:grid;grid-template-columns:1fr 1fr}.farm-summary,.field-list{grid-column:span 2}.bottom-grid{grid-template-columns:1fr 1fr}.assistant-panel{grid-column:span 2}}
 @media(max-width:650px){.sidebar{width:62px;padding:13px 7px}.brand-mark{width:39px;height:39px}.main-area{width:calc(100% - 62px);margin-right:62px;padding:16px 11px}.topbar{align-items:flex-start;flex-direction:column;margin-bottom:20px}.welcome h1{font-size:20px}.top-actions{width:100%}.search-box{flex:1;width:auto}.user-chip{display:none}.section-heading{align-items:flex-start;gap:10px;flex-direction:column}.section-heading h2{font-size:18px}.heading-actions{width:100%}.heading-actions .button{flex:1}.map-panel,.map-frame,.farm-map,.map-loading{height:430px;min-height:430px}.map-selected-card{width:190px;top:58px;left:9px;padding:11px}.map-top-search{right:9px;top:9px;width:calc(100% - 18px)}.left-column{display:flex}.bottom-grid{grid-template-columns:1fr}.assistant-panel{grid-column:auto}.metrics-grid{gap:8px}.metric-card{padding:11px;min-height:105px}.footer{gap:10px;flex-direction:column;align-items:flex-start}.preview-box{align-items:flex-start;flex-direction:column}.side-caption{font-size:8px}.nav-item{min-height:43px}.upload-actions{flex-wrap:wrap}}
+
+
+/* NABTA MAP 2.0 - satellite and boundary drawing controls */
+.map-layer-switch{
+  position:absolute;z-index:700;top:15px;left:15px;display:flex;gap:4px;
+  padding:4px;background:#ffffffef;border:1px solid #e7ece4;border-radius:12px;
+  box-shadow:0 5px 18px #183c3218;backdrop-filter:blur(10px)
+}
+.map-layer-switch button{
+  display:flex;align-items:center;gap:6px;border:0;border-radius:8px;
+  background:transparent;color:#65756a;padding:8px 10px;font-size:10px;
+  font-weight:700;transition:.18s
+}
+.map-layer-switch button.selected{background:#edf2e5;color:#64783b}
+.map-drawing-tools{
+  position:absolute;z-index:700;right:15px;bottom:15px;display:flex;
+  align-items:center;gap:7px;max-width:calc(100% - 30px);flex-wrap:wrap
+}
+.map-drawing-tools button{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  border:1px solid #e5eadf;border-radius:10px;padding:9px 12px;
+  font-size:10px;font-weight:700;box-shadow:0 5px 16px #183c3218
+}
+.draw-start,.draw-save{background:#78884a;color:#fff}
+.draw-cancel{background:#fff;color:#596b5d}
+.draw-save:disabled{opacity:.45;cursor:not-allowed}
+.drawing-hint{background:#183f32ed;color:#fff;padding:9px 12px;border-radius:9px;font-size:10px}
+@media(max-width:650px){
+ .map-layer-switch{top:56px;left:9px}
+ .map-layer-switch button{padding:8px;font-size:9px}
+ .map-drawing-tools{right:9px;bottom:50px}
+ .drawing-hint{max-width:170px;line-height:1.6}
+}
