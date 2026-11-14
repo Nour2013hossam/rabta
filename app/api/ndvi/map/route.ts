@@ -203,6 +203,14 @@ export async function POST(request: NextRequest) {
   }
 
   const geometryCoordinates = [closed.map(([lat, lon]) => [lon, lat])];
+  const middleLatitude = ((north + south) / 2) * (Math.PI / 180);
+  const physicalAspect =
+    ((east - west) * Math.cos(middleLatitude)) / (north - south);
+  const safeAspect = Math.max(0.15, Math.min(6, physicalAspect));
+  const outputWidth =
+    safeAspect >= 1 ? 512 : Math.max(80, Math.round(512 * safeAspect));
+  const outputHeight =
+    safeAspect >= 1 ? Math.max(80, Math.round(512 / safeAspect)) : 512;
 
   const processRequest = {
     input: {
@@ -225,8 +233,8 @@ export async function POST(request: NextRequest) {
       ],
     },
     output: {
-      width: 512,
-      height: 512,
+      width: outputWidth,
+      height: outputHeight,
       responses: [
         {
           identifier: "default",
