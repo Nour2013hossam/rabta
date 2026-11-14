@@ -181,3 +181,10 @@
  .ndvi-chart svg{height:120px}
  .ndvi-source{flex-direction:column;align-items:flex-start}
 }
+
+.ndvi-demo-warning{
+  display:flex;align-items:flex-start;gap:8px;margin-top:13px;padding:10px 12px;
+  background:#fff8ed;border:1px solid #f2e3cf;border-radius:10px;
+  color:#a97943;font-size:9px;line-height:1.8
+}
+.ndvi-demo-warning svg{flex-shrink:0;margin-top:2px}
