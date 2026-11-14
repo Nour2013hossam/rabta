@@ -163,6 +163,13 @@ function summarize(response: StatsResponse) {
   };
 }
 
+type NDVISummary = ReturnType<typeof summarize>;
+
+const analysisCache = new Map<
+  string,
+  { expiresAt: number; value: NDVISummary }
+>();
+
 export async function POST(request: NextRequest) {
   const clientId = process.env.CDSE_CLIENT_ID;
   const clientSecret = process.env.CDSE_CLIENT_SECRET;
@@ -292,6 +299,24 @@ function evaluatePixel(samples) {
     },
   };
 
+  const cacheKey = JSON.stringify({
+    coordinates,
+    from: isoDay(from),
+    to: isoDay(to),
+  });
+  const cached = analysisCache.get(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    return NextResponse.json({
+      fieldName: body.fieldName ?? "حقل غير مسمى",
+      period: { from: isoDay(from), to: isoDay(to) },
+      ...cached.value,
+      cached: true,
+    });
+  }
+
+  if (cached) analysisCache.delete(cacheKey);
+
   try {
     const accessToken = await getAccessToken(clientId, clientSecret);
 
@@ -331,13 +356,26 @@ function evaluatePixel(samples) {
     const raw = (await response.json()) as StatsResponse;
     const result = summarize(raw);
 
+    if (analysisCache.size > 100) {
+      const oldestKey = analysisCache.keys().next().value;
+      if (oldestKey) analysisCache.delete(oldestKey);
+    }
+
+    analysisCache.set(cacheKey, {
+      value: result,
+      expiresAt: Date.now() + 20 * 60 * 1000,
+    });
+
     if (result.observations.length === 0) {
       return NextResponse.json(
         {
+          fieldName: body.fieldName ?? "حقل غير مسمى",
+          period: { from: isoDay(from), to: isoDay(to) },
           ...result,
           error:
             "لم تتوفر مشاهد صالحة لهذا الحقل والفترة. قد تكون المساحة صغيرة أو مغطاة بالغيوم أو لا توجد تغطية حديثة.",
           code: "NO_VALID_SCENES",
+          cached: false,
         },
         { status: 200 }
       );
@@ -347,6 +385,7 @@ function evaluatePixel(samples) {
       fieldName: body.fieldName ?? "حقل غير مسمى",
       period: { from: isoDay(from), to: isoDay(to) },
       ...result,
+      cached: false,
     });
   } catch (error) {
     console.error("NDVI analysis failed:", error);
