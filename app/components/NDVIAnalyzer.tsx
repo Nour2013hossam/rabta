@@ -2,8 +2,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  ArrowDownRight,
-  ArrowUpRight,
   Satellite,
   Sparkles,
   TriangleAlert,
