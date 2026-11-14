@@ -103,12 +103,12 @@ export default function Home() {
       moisture: 0,
       temperature: 0,
       ph: 0,
-      status: "بانتظار إدخال البيانات",
+      status: "البيانات الزراعية غير متاحة",
       coords,
     };
     setFields((current) => [...current, field]);
     setSelectedId(nextId);
-    setNotice("تم حفظ حدود الأرض ومساحتها التقريبية في هذا المتصفح.");
+    setNotice("تم حفظ حدود الحقل ومساحته التقريبية. أضف بيانات المحصول والقياسات لاحقًا.");
   }
 
   function handleImage(file?: File) {
