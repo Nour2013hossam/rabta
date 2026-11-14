@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity, ArrowDownLeft, ArrowUpLeft, Bell, Camera, Check, ChevronDown,
-  CloudSun, Droplets, FileDown, FlaskConical, Leaf, Map, Menu, MessageCircle, Satellite,
+  CloudSun, Droplets, FileDown, FlaskConical, Leaf, Map, MessageCircle, Satellite,
   Plus, Search, Send, Settings, ShieldCheck, Sprout, Thermometer,
   Upload, Wind, X, ScanLine, LayoutDashboard, Wheat
 } from "lucide-react";
