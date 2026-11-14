@@ -188,3 +188,35 @@
   color:#a97943;font-size:9px;line-height:1.8
 }
 .ndvi-demo-warning svg{flex-shrink:0;margin-top:2px}
+
+
+/* NABTA NDVI SATELLITE MAP OVERLAY */
+.map-ndvi-tools{
+  position:absolute;z-index:720;top:63px;left:15px;display:flex;
+}
+.ndvi-map-button{
+  min-height:36px;padding:8px 11px;display:flex;align-items:center;justify-content:center;
+  gap:7px;border:1px solid #e5eadf;border-radius:10px;background:#fffffff2;
+  color:#64773d;box-shadow:0 5px 16px #183c321d;backdrop-filter:blur(9px);
+  font-size:10px;font-weight:800;transition:.18s ease
+}
+.ndvi-map-button:hover:not(:disabled){transform:translateY(-1px);background:#f5f8ed}
+.ndvi-map-button.active{background:#62773b;color:#fff;border-color:#62773b}
+.ndvi-map-button:disabled{opacity:.72;cursor:wait}
+.ndvi-map-legend{
+  position:absolute;z-index:710;left:14px;bottom:13px;width:202px;
+  padding:11px 12px;background:#ffffffed;border:1px solid #e8ece4;
+  border-radius:11px;box-shadow:0 5px 18px #183c3217;backdrop-filter:blur(10px)
+}
+.ndvi-legend-title{font-size:10px;font-weight:800;color:#264a39;margin-bottom:8px}
+.ndvi-legend-gradient{
+  height:10px;border-radius:8px;
+  background:linear-gradient(90deg,#735b45 0%,#a5804d 14%,#d2b769 28%,#ded77e 42%,#a4be68 56%,#5b9d5b 70%,#287748 85%,#155336 100%)
+}
+.ndvi-legend-labels{display:flex;justify-content:space-between;margin-top:5px;color:#79877d;font-size:8px}
+.ndvi-map-legend small{display:block;margin-top:7px;color:#9aa49b;font-size:8px}
+@media(max-width:650px){
+  .map-ndvi-tools{top:101px;left:9px}
+  .ndvi-map-button{min-height:33px;padding:7px 9px;font-size:9px}
+  .ndvi-map-legend{left:9px;bottom:13px;width:175px;padding:9px}
+}
