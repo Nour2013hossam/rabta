@@ -141,7 +141,7 @@ export default function NDVIAnalyzer({ field }: { field: FieldForNDVI }) {
     }
   }
 
-  const trend = result?.change;
+  const trend = result?.change ?? null;
   const trendLabel =
     trend === null || trend === undefined
       ? "لا توجد مقارنة بعد"
