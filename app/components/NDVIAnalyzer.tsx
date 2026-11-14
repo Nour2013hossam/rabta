@@ -11,6 +11,7 @@ type FieldForNDVI = {
   id: number;
   name: string;
   crop: string;
+  demo?: boolean;
   coords?: [number, number][];
 };
 
@@ -167,6 +168,12 @@ export default function NDVIAnalyzer({ field }: { field: FieldForNDVI }) {
           {loading ? "جاري التحليل..." : "حلّل الحقل"}
         </button>
       </div>
+
+      {field.demo && (
+        <div className="ndvi-demo-warning">
+          <TriangleAlert size={15} /> الحدود الافتراضية تجريبية وليست قطعة أرض موثقة. ارسم حدود أرضك الفعلية قبل الاعتماد على نتائجها.
+        </div>
+      )}
 
       <div className="ndvi-field-strip">
         <span>الحقل المختار</span>
