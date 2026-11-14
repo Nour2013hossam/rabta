@@ -407,7 +407,7 @@ export default function FarmMap({
               color: activeField === field.id ? "#f7fff0" : "#ffffff",
               weight: activeField === field.id ? 4 : 2,
               fillColor: activeField === field.id ? "#b6ca75" : "#88aa72",
-              fillOpacity: activeField === field.id ? 0.4 : 0.2,
+              fillOpacity: activeField === field.id ? (activeNDVIVisible ? 0.06 : 0.4) : 0.2,
             }}
             eventHandlers={{
               click: () => {
@@ -612,6 +612,7 @@ export default function FarmMap({
             <span>منخفض</span><span>متوسط</span><span>مرتفع</span>
           </div>
           <small>{ndviLayer.from.slice(0, 10)} — {ndviLayer.to.slice(0, 10)}</small>
+          <small>كثافة الغطاء النباتي، وليست تشخيصًا للأمراض.</small>
         </div>
       ) : (
         <div className="map-legend">
