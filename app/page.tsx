@@ -5,8 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity, ArrowDownLeft, ArrowUpLeft, Bell, Camera, Check, ChevronDown,
   CloudSun, Droplets, FileDown, FlaskConical, Leaf, Map, Menu, MessageCircle,
-  MoreHorizontal, Plus, Search, Send, Settings, ShieldCheck, Sprout, Thermometer,
-  Upload, Wind, X, Zap, ScanLine, LayoutDashboard, Wheat, ImagePlus
+  Plus, Search, Send, Settings, ShieldCheck, Sprout, Thermometer,
+  Upload, Wind, X, ScanLine, LayoutDashboard, Wheat
 } from "lucide-react";
 
 const FarmMap = dynamic(() => import("./components/FarmMap"), {
