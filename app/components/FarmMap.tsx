@@ -13,7 +13,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { Map as LeafletMap, LatLngExpression } from "leaflet";
-import { Check, LoaderCircle, Map as MapIcon, PencilLine, Satellite, Search, X } from "lucide-react";
+import { Check, LoaderCircle, Map as MapIcon, PencilLine, Satellite, X } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 export type FarmMapField = {
@@ -98,7 +98,20 @@ function calculateAreaInFeddans(coords: [number, number][]) {
 }
 
 function cropLabel(tags: Record<string, string>) {
-  if (tags.crop) return tags.crop.replaceAll("_", " ");
+  if (tags.crop) {
+    const crop = tags.crop.toLowerCase().replaceAll("_", " ");
+    const translations: Record<string, string> = {
+      wheat: "قمح",
+      tomato: "طماطم",
+      maize: "ذرة",
+      corn: "ذرة",
+      rice: "أرز",
+      potato: "بطاطس",
+      cotton: "قطن",
+      sugarcane: "قصب السكر",
+    };
+    return translations[crop] ?? crop;
+  }
   if (tags.landuse === "orchard") return "بستان";
   if (tags.landuse === "vineyard") return "كروم";
   if (tags.landuse === "greenhouse") return "صوبة زراعية";
