@@ -16,7 +16,7 @@ const FarmMap = dynamic(() => import("./components/FarmMap"), {
   loading: () => <div className="map-loading">جارٍ تجهيز الخريطة...</div>,
 });
 
-type Field = { id: number; name: string; crop: string; area: string; health: number; moisture: number; temperature: number; ph: number; status: string; coords?: [number, number][] };
+type Field = { id: number; name: string; crop: string; area: string; health: number; moisture: number; temperature: number; ph: number; status: string; demo?: boolean; coords?: [number, number][] };
 
 const initialFields: Field[] = [
   { id: 1, name: "قطعة الطماطم", crop: "طماطم", area: "12.4 فدان", health: 87, moisture: 68, temperature: 28, ph: 6.4, status: "جيدة", demo: true, coords: [[30.790,30.987],[30.793,31.002],[30.782,31.008],[30.778,30.992]] },
