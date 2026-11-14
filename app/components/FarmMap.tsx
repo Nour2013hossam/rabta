@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   CircleMarker,
+  ImageOverlay,
   MapContainer,
   Polygon,
   Polyline,
@@ -13,7 +14,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { Map as LeafletMap, LatLngExpression } from "leaflet";
-import { Check, LoaderCircle, Map as MapIcon, PencilLine, Satellite, X } from "lucide-react";
+import { Activity, Check, LoaderCircle, Map as MapIcon, PencilLine, Satellite, X } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 export type FarmMapField = {
@@ -136,6 +137,16 @@ export default function FarmMap({
   const [detecting, setDetecting] = useState(false);
   const [detectedFields, setDetectedFields] = useState<DetectedField[]>([]);
   const [selectedDetectedId, setSelectedDetectedId] = useState<number | null>(null);
+  const [ndviLoading, setNdviLoading] = useState(false);
+  const [ndviVisible, setNdviVisible] = useState(false);
+  const [ndviLayer, setNdviLayer] = useState<{
+    fieldId: number;
+    url: string;
+    bounds: [[number, number], [number, number]];
+    from: string;
+    to: string;
+  } | null>(null);
+  const ndviUrlRef = useRef<string | null>(null);
 
   const mappedFields = fields.filter(
     (field): field is FarmMapField & { coords: [number, number][] } =>
@@ -144,6 +155,85 @@ export default function FarmMap({
   const selectedDetected = detectedFields.find(
     (field) => field.osmId === selectedDetectedId
   );
+
+  const activeMappedField = mappedFields.find((field) => field.id === activeField);
+  const activeNDVIVisible =
+    ndviVisible && ndviLayer?.fieldId === activeField;
+
+  useEffect(() => {
+    return () => {
+      if (ndviUrlRef.current) URL.revokeObjectURL(ndviUrlRef.current);
+    };
+  }, []);
+
+  const toggleNDVI = async () => {
+    if (!activeMappedField) {
+      onNotify("هذا الحقل لا يحتوي على حدود جغرافية. ارسم حدوده أولًا.");
+      return;
+    }
+
+    if (ndviLayer?.fieldId === activeField) {
+      setNdviVisible((visible) => !visible);
+      return;
+    }
+
+    setNdviLoading(true);
+    try {
+      const response = await fetch("/api/ndvi/map", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fieldName: activeMappedField.name,
+          coordinates: activeMappedField.coords,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => ({}))) as {
+          error?: string;
+          setup?: string;
+        };
+        onNotify(
+          payload.setup
+            ? `${payload.error ?? "الخدمة غير مهيأة."} ${payload.setup}`
+            : payload.error ?? "تعذر تحميل طبقة NDVI."
+        );
+        return;
+      }
+
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!contentType.includes("image/png")) {
+        onNotify("استجابة تحليل الأقمار الصناعية ليست صورة صالحة.");
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      if (ndviUrlRef.current) URL.revokeObjectURL(ndviUrlRef.current);
+      ndviUrlRef.current = url;
+
+      const latitudes = activeMappedField.coords.map((point) => point[0]);
+      const longitudes = activeMappedField.coords.map((point) => point[1]);
+      const bounds: [[number, number], [number, number]] = [
+        [Math.min(...latitudes), Math.min(...longitudes)],
+        [Math.max(...latitudes), Math.max(...longitudes)],
+      ];
+
+      setNdviLayer({
+        fieldId: activeField,
+        url,
+        bounds,
+        from: response.headers.get("X-NABTA-Period-From") ?? "",
+        to: response.headers.get("X-NABTA-Period-To") ?? "",
+      });
+      setNdviVisible(true);
+      onNotify("تم تحميل طبقة NDVI للحقل المحدد من Sentinel-2.");
+    } catch {
+      onNotify("تعذر الاتصال بخدمة تحليل الأقمار الصناعية. تحقق من الإنترنت والإعدادات.");
+    } finally {
+      setNdviLoading(false);
+    }
+  };
 
   const startDiscovery = async () => {
     const map = mapRef.current;
@@ -300,6 +390,15 @@ export default function FarmMap({
           />
         )}
 
+        {activeNDVIVisible && ndviLayer && (
+          <ImageOverlay
+            url={ndviLayer.url}
+            bounds={ndviLayer.bounds}
+            opacity={0.78}
+            zIndex={250}
+          />
+        )}
+
         {mappedFields.map((field) => (
           <Polygon
             key={field.id}
@@ -391,6 +490,19 @@ export default function FarmMap({
           title="خريطة الشوارع"
         >
           <MapIcon size={15} /><span>شوارع</span>
+        </button>
+      </div>
+
+      <div className="map-ndvi-tools">
+        <button
+          type="button"
+          className={activeNDVIVisible ? "ndvi-map-button active" : "ndvi-map-button"}
+          onClick={toggleNDVI}
+          disabled={ndviLoading}
+          title="عرض مؤشر صحة الغطاء النباتي NDVI"
+        >
+          {ndviLoading ? <LoaderCircle size={15} className="spin" /> : <Activity size={15} />}
+          <span>{ndviLoading ? "جاري تحليل NDVI..." : activeNDVIVisible ? "إخفاء طبقة NDVI" : "عرض طبقة NDVI"}</span>
         </button>
       </div>
 
@@ -492,10 +604,21 @@ export default function FarmMap({
         )}
       </div>
 
-      <div className="map-legend">
-        <span><i className="legend-dot healthy" /> حقل محفوظ</span>
-        <span><i className="legend-dot watch" /> حدود مرشحة</span>
-      </div>
+      {activeNDVIVisible && ndviLayer ? (
+        <div className="ndvi-map-legend">
+          <div className="ndvi-legend-title">مؤشر الغطاء النباتي · NDVI</div>
+          <div className="ndvi-legend-gradient" />
+          <div className="ndvi-legend-labels">
+            <span>منخفض</span><span>متوسط</span><span>مرتفع</span>
+          </div>
+          <small>{ndviLayer.from.slice(0, 10)} — {ndviLayer.to.slice(0, 10)}</small>
+        </div>
+      ) : (
+        <div className="map-legend">
+          <span><i className="legend-dot healthy" /> حقل محفوظ</span>
+          <span><i className="legend-dot watch" /> حدود مرشحة</span>
+        </div>
+      )}
     </div>
   );
 }
