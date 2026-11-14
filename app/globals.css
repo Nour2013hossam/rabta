@@ -120,3 +120,64 @@
     right:9px;
   }
 }
+
+
+/* NABTA SATELLITE NDVI ANALYTICS */
+.ndvi-panel{padding:20px;margin-top:16px;overflow:hidden}
+.ndvi-header{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.ndvi-title{display:flex;align-items:center;gap:12px}
+.ndvi-icon{width:43px;height:43px;border-radius:14px;background:#edf2e5;color:#64783b;display:grid;place-items:center}
+.ndvi-title h3{font-size:17px;margin:2px 0 3px;color:var(--ink)}
+.ndvi-title p{font-size:10px;color:var(--muted);margin:0}
+.ndvi-field-strip{display:flex;align-items:center;gap:9px;margin-top:17px;padding:10px 12px;background:#f7f9f4;border:1px solid #edf0e9;border-radius:11px}
+.ndvi-field-strip>span:first-child{font-size:10px;color:#89958b}
+.ndvi-field-strip strong{font-size:11px;color:#264a39}
+.ndvi-crop{font-size:9px;color:#718348;background:#eaf0df;padding:4px 8px;border-radius:6px}
+.ndvi-empty,.ndvi-loading-state{min-height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px}
+.ndvi-empty-icon{width:54px;height:54px;border-radius:18px;background:#edf2e5;color:#748a48;display:grid;place-items:center;margin-bottom:12px}
+.ndvi-empty b,.ndvi-loading-state b{font-size:13px;color:#264a39}
+.ndvi-empty p{max-width:480px;font-size:10px;line-height:1.9;color:#849187;margin:7px 0 0}
+.ndvi-loading-state{gap:10px;color:#718348}
+.ndvi-loading-state small{font-size:10px;color:#89958b}
+.ndvi-spinner{width:15px;height:15px;border:2px solid #ffffff66;border-top-color:#fff;border-radius:50%;display:inline-block;animation:nabta-spin .8s linear infinite}
+.ndvi-spinner.large{width:30px;height:30px;border:3px solid #e3ead8;border-top-color:#78884a}
+.ndvi-error{display:flex;gap:10px;align-items:flex-start;background:#fff7ed;color:#b36b2c;border:1px solid #f4dfc9;padding:13px;border-radius:12px;margin-top:13px}
+.ndvi-error b{font-size:11px}
+.ndvi-error p{font-size:10px;line-height:1.8;color:#8f795f;margin:4px 0 0}
+.ndvi-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}
+.ndvi-stat{padding:13px;border:1px solid var(--line);background:#fff;border-radius:12px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.ndvi-stat span{font-size:9px;color:#829087}
+.ndvi-stat strong{font-size:23px;color:#264a39;font-family:Inter,"IBM Plex Sans Arabic",sans-serif;font-variant-numeric:tabular-nums}
+.ndvi-stat small{font-size:9px;color:#98a299;line-height:1.6}
+.ndvi-stat .positive{color:#198566}
+.ndvi-stat .negative{color:#c17d48}
+.ndvi-chart-wrap{border:1px solid var(--line);border-radius:14px;margin-top:13px;padding:15px}
+.ndvi-chart-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ndvi-chart-heading>div{display:flex;flex-direction:column;gap:4px}
+.ndvi-chart-heading b{font-size:11px;color:#264a39}
+.ndvi-chart-heading small{font-size:9px;color:#8c988f}
+.ndvi-series-label{font-size:10px;color:#73884b;display:flex;align-items:center;gap:6px}
+.ndvi-series-label i{width:8px;height:8px;background:#78884a;border-radius:50%}
+.ndvi-chart{display:grid;grid-template-columns:36px minmax(0,1fr);gap:4px;align-items:stretch;margin-top:14px}
+.ndvi-y-labels{display:flex;flex-direction:column;justify-content:space-between;padding:0 0 5px;color:#9aa59a;font-size:9px}
+.ndvi-chart svg{width:100%;height:145px;overflow:visible}
+.ndvi-x-labels{display:flex;justify-content:space-between;padding-right:40px;color:#98a298;font-size:9px;margin-top:5px}
+.ndvi-interpretation{display:flex;gap:10px;align-items:flex-start;background:#f2f6eb;border:1px solid #e7eedb;color:#728648;border-radius:12px;padding:13px;margin-top:13px}
+.ndvi-interpretation b{font-size:10px;color:#4c653a}
+.ndvi-interpretation p{font-size:10px;line-height:1.85;color:#68786b;margin:4px 0 0}
+.ndvi-source{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#819087;font-size:9px;margin-top:12px}
+.ndvi-disclaimer{font-size:9px;line-height:1.85;color:#8c978e;border-top:1px solid var(--line);margin-top:14px;padding-top:11px}
+.ndvi-disclaimer b{color:#a27b48}
+@media(max-width:850px){.ndvi-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+ .ndvi-panel{padding:14px}
+ .ndvi-header{align-items:flex-start;flex-direction:column}
+ .ndvi-header>.button{width:100%}
+ .ndvi-title h3{font-size:14px}
+ .ndvi-title p{font-size:9px}
+ .ndvi-stat{padding:10px}
+ .ndvi-stat strong{font-size:20px}
+ .ndvi-chart-wrap{padding:10px}
+ .ndvi-chart svg{height:120px}
+ .ndvi-source{flex-direction:column;align-items:flex-start}
+}
