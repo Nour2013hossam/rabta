@@ -19,9 +19,9 @@ const FarmMap = dynamic(() => import("./components/FarmMap"), {
 type Field = { id: number; name: string; crop: string; area: string; health: number; moisture: number; temperature: number; ph: number; status: string; coords?: [number, number][] };
 
 const initialFields: Field[] = [
-  { id: 1, name: "قطعة الطماطم", crop: "طماطم", area: "12.4 فدان", health: 87, moisture: 68, temperature: 28, ph: 6.4, status: "جيدة", coords: [[30.790,30.987],[30.793,31.002],[30.782,31.008],[30.778,30.992]] },
-  { id: 2, name: "قطعة القمح", crop: "قمح", area: "8.2 فدان", health: 94, moisture: 72, temperature: 26, ph: 6.8, status: "ممتازة", coords: [[30.806,31.006],[30.809,31.021],[30.797,31.026],[30.793,31.011]] },
-  { id: 3, name: "قطعة الذرة", crop: "ذرة", area: "6.7 فدان", health: 73, moisture: 49, temperature: 31, ph: 5.9, status: "تحتاج متابعة", coords: [[30.784,31.012],[30.788,31.027],[30.775,31.033],[30.770,31.017]] },
+  { id: 1, name: "قطعة الطماطم", crop: "طماطم", area: "12.4 فدان", health: 87, moisture: 68, temperature: 28, ph: 6.4, status: "جيدة", demo: true, coords: [[30.790,30.987],[30.793,31.002],[30.782,31.008],[30.778,30.992]] },
+  { id: 2, name: "قطعة القمح", crop: "قمح", area: "8.2 فدان", health: 94, moisture: 72, temperature: 26, ph: 6.8, status: "ممتازة", demo: true, coords: [[30.806,31.006],[30.809,31.021],[30.797,31.026],[30.793,31.011]] },
+  { id: 3, name: "قطعة الذرة", crop: "ذرة", area: "6.7 فدان", health: 73, moisture: 49, temperature: 31, ph: 5.9, status: "تحتاج متابعة", demo: true, coords: [[30.784,31.012],[30.788,31.027],[30.775,31.033],[30.770,31.017]] },
 ];
 
 const navItems = [
