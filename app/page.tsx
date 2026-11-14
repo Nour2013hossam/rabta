@@ -4,10 +4,12 @@ import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity, ArrowDownLeft, ArrowUpLeft, Bell, Camera, Check, ChevronDown,
-  CloudSun, Droplets, FileDown, FlaskConical, Leaf, Map, Menu, MessageCircle,
+  CloudSun, Droplets, FileDown, FlaskConical, Leaf, Map, Menu, MessageCircle, Satellite,
   Plus, Search, Send, Settings, ShieldCheck, Sprout, Thermometer,
   Upload, Wind, X, ScanLine, LayoutDashboard, Wheat
 } from "lucide-react";
+
+import NDVIAnalyzer from "./components/NDVIAnalyzer";
 
 const FarmMap = dynamic(() => import("./components/FarmMap"), {
   ssr: false,
@@ -29,6 +31,7 @@ const navItems = [
   { label: "حالة التربة", icon: Droplets },
   { label: "الطقس", icon: CloudSun },
   { label: "مساعد نَبْتَة", icon: MessageCircle },
+  { label: "تحليل الأقمار الصناعية", icon: Satellite },
 ];
 
 export default function Home() {
@@ -246,6 +249,8 @@ export default function Home() {
           <form className="chat-form" onSubmit={sendMessage}><input value={chatInput} onChange={(e)=>setChatInput(e.target.value)} placeholder="اكتب سؤالك عن المحصول أو التربة..."/><button className="send-button" aria-label="إرسال"><Send size={18}/></button></form>
           <small className="demo-note">المحادثة الحالية نموذج واجهة؛ لم يتم ربط مزود ذكاء اصطناعي بعد.</small>
         </section>}
+
+        <NDVIAnalyzer field={selected} />
 
         <footer className="footer"><span>© 2026 نَبْتَة · نزرع معرفة لمستقبل أخضر</span><span><ShieldCheck size={14}/> نسخة أولية قيد التطوير</span></footer>
       </section>
