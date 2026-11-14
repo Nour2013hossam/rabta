@@ -91,13 +91,13 @@ export default function Home() {
     setNotice("تمت إضافة الحقل إلى العرض التجريبي");
   }
 
-  function createFieldFromMap(coords: [number, number][], areaFeddans: number) {
+  function createFieldFromMap(coords: [number, number][], areaFeddans: number, suggestedName: string, suggestedCrop: string) {
     const nextId = Math.max(...fields.map((field) => field.id), 0) + 1;
     const area = Math.max(areaFeddans, 0.01);
     const field: Field = {
       id: nextId,
-      name: `قطعة جديدة ${nextId}`,
-      crop: "غير محدد",
+      name: suggestedName || `قطعة جديدة ${nextId}`,
+      crop: suggestedCrop || "غير محدد",
       area: `${area.toFixed(2)} فدان تقريبًا`,
       health: 0,
       moisture: 0,
@@ -175,7 +175,7 @@ export default function Home() {
         <div className="dashboard-grid">
           <section className="map-panel panel">
             <div className="map-top-search"><Search size={16}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="ابحث عن موقع أو حقل..." /></div>
-            <FarmMap activeField={selectedId} fields={fields} onSelectField={setSelectedId} onCreateField={createFieldFromMap}/>
+            <FarmMap activeField={selectedId} fields={fields} onSelectField={setSelectedId} onCreateField={createFieldFromMap} onNotify={setNotice}/>
             <div className="map-label"><span className="live-dot"/> صور أقمار صناعية / OpenStreetMap</div>
             <div className="map-selected-card">
               <div className="selected-head"><span className="crop-tag">{selected.crop}</span><b>{selected.name}</b><span className="health-dot"/></div>
