@@ -38,3 +38,75 @@
  .map-drawing-tools{right:9px;bottom:50px}
  .drawing-hint{max-width:170px;line-height:1.6}
 }
+
+
+/* NABTA AUTO FIELD DISCOVERY */
+.map-discovery-tools{
+  position:absolute;
+  z-index:700;
+  top:63px;
+  right:15px;
+  display:flex;
+}
+.discover-button{
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:8px 12px;
+  border:1px solid #e5eadf;
+  border-radius:10px;
+  color:#fff;
+  background:#075b55;
+  box-shadow:0 5px 16px #183c3220;
+  font-size:10px;
+  font-weight:800;
+  transition:.18s ease;
+}
+.discover-button:hover:not(:disabled){background:#064b47;transform:translateY(-1px)}
+.discover-button:disabled{opacity:.7;cursor:wait}
+.spin{animation:nabta-spin 1s linear infinite}
+@keyframes nabta-spin{to{transform:rotate(360deg)}}
+.map-detection-panel{
+  position:absolute;
+  z-index:750;
+  top:108px;
+  right:15px;
+  width:260px;
+  max-width:calc(100% - 30px);
+  padding:13px;
+  border:1px solid #e8ece4;
+  border-radius:14px;
+  background:#fffffff2;
+  box-shadow:0 10px 30px #183c3222;
+  backdrop-filter:blur(12px);
+}
+.detection-title{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.detection-title>div{display:flex;flex-direction:column;gap:3px}
+.detection-title b{font-size:11px;color:#183f32}
+.detection-title small{font-size:9px;color:#879389}
+.detection-close{
+  width:27px;height:27px;border:0;border-radius:8px;background:#f1f3ed;
+  color:#647269;display:grid;place-items:center
+}
+.map-detection-panel select{
+  width:100%;height:37px;margin-top:10px;padding:0 8px;
+  border:1px solid #e5eadf;border-radius:8px;background:#fff;
+  color:#405a4a;font-family:inherit;font-size:9px;outline:none
+}
+.detection-meta{display:flex;justify-content:space-between;gap:8px;margin:9px 0;color:#7c8c80;font-size:9px}
+.detection-save{
+  width:100%;height:36px;border:0;border-radius:9px;
+  background:#78884a;color:#fff;display:flex;align-items:center;
+  justify-content:center;gap:7px;font-family:inherit;font-size:10px;font-weight:800
+}
+.detection-save:disabled{opacity:.5;cursor:not-allowed}
+.detection-disclaimer{
+  display:block;margin-top:8px;color:#9aa39a;font-size:8px;line-height:1.7
+}
+@media(max-width:650px){
+  .map-discovery-tools{top:56px;right:9px}
+  .discover-button{min-height:34px;padding:7px 9px;font-size:9px}
+  .map-detection-panel{top:99px;right:9px;width:225px;padding:10px}
+}
