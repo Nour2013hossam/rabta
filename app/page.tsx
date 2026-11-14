@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity, ArrowDownLeft, ArrowUpLeft, Bell, Camera, Check, ChevronDown,
   CloudSun, Droplets, FileDown, FlaskConical, Leaf, Map, Menu, MessageCircle,
@@ -14,12 +14,12 @@ const FarmMap = dynamic(() => import("./components/FarmMap"), {
   loading: () => <div className="map-loading">جارٍ تجهيز الخريطة...</div>,
 });
 
-type Field = { id: number; name: string; crop: string; area: string; health: number; moisture: number; temperature: number; ph: number; status: string };
+type Field = { id: number; name: string; crop: string; area: string; health: number; moisture: number; temperature: number; ph: number; status: string; coords?: [number, number][] };
 
 const initialFields: Field[] = [
-  { id: 1, name: "قطعة الطماطم", crop: "طماطم", area: "12.4 فدان", health: 87, moisture: 68, temperature: 28, ph: 6.4, status: "جيدة" },
-  { id: 2, name: "قطعة القمح", crop: "قمح", area: "8.2 فدان", health: 94, moisture: 72, temperature: 26, ph: 6.8, status: "ممتازة" },
-  { id: 3, name: "قطعة الذرة", crop: "ذرة", area: "6.7 فدان", health: 73, moisture: 49, temperature: 31, ph: 5.9, status: "تحتاج متابعة" },
+  { id: 1, name: "قطعة الطماطم", crop: "طماطم", area: "12.4 فدان", health: 87, moisture: 68, temperature: 28, ph: 6.4, status: "جيدة", coords: [[30.790,30.987],[30.793,31.002],[30.782,31.008],[30.778,30.992]] },
+  { id: 2, name: "قطعة القمح", crop: "قمح", area: "8.2 فدان", health: 94, moisture: 72, temperature: 26, ph: 6.8, status: "ممتازة", coords: [[30.806,31.006],[30.809,31.021],[30.797,31.026],[30.793,31.011]] },
+  { id: 3, name: "قطعة الذرة", crop: "ذرة", area: "6.7 فدان", health: 73, moisture: 49, temperature: 31, ph: 5.9, status: "تحتاج متابعة", coords: [[30.784,31.012],[30.788,31.027],[30.775,31.033],[30.770,31.017]] },
 ];
 
 const navItems = [
@@ -32,7 +32,8 @@ const navItems = [
 ];
 
 export default function Home() {
-  const [fields, setFields] = useState(initialFields);
+  const [fields, setFields] = useState<Field[]>(initialFields);
+  const [storageReady, setStorageReady] = useState(false);
   const [selectedId, setSelectedId] = useState(1);
   const [activeNav, setActiveNav] = useState("لوحة التحكم");
   const [search, setSearch] = useState("");
@@ -48,6 +49,32 @@ export default function Home() {
   const [notice, setNotice] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("nabta.fields");
+      if (saved) {
+        const parsed = JSON.parse(saved) as Field[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setFields(parsed);
+          setSelectedId(parsed[0].id);
+        }
+      }
+    } catch {
+      setNotice("تعذر استرجاع الحقول المحفوظة؛ سنستخدم بيانات العرض الافتراضية.");
+    } finally {
+      setStorageReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!storageReady) return;
+    try {
+      window.localStorage.setItem("nabta.fields", JSON.stringify(fields));
+    } catch {
+      setNotice("تعذر حفظ البيانات محليًا على هذا المتصفح.");
+    }
+  }, [fields, storageReady]);
   const selected = fields.find((field) => field.id === selectedId) ?? fields[0];
   const filteredFields = useMemo(() => fields.filter((field) => field.name.includes(search) || field.crop.includes(search)), [fields, search]);
 
@@ -62,6 +89,26 @@ export default function Home() {
     setNewName("");
     setNewArea("");
     setNotice("تمت إضافة الحقل إلى العرض التجريبي");
+  }
+
+  function createFieldFromMap(coords: [number, number][], areaFeddans: number) {
+    const nextId = Math.max(...fields.map((field) => field.id), 0) + 1;
+    const area = Math.max(areaFeddans, 0.01);
+    const field: Field = {
+      id: nextId,
+      name: `قطعة جديدة ${nextId}`,
+      crop: "غير محدد",
+      area: `${area.toFixed(2)} فدان تقريبًا`,
+      health: 0,
+      moisture: 0,
+      temperature: 0,
+      ph: 0,
+      status: "بانتظار إدخال البيانات",
+      coords,
+    };
+    setFields((current) => [...current, field]);
+    setSelectedId(nextId);
+    setNotice("تم حفظ حدود الأرض ومساحتها التقريبية في هذا المتصفح.");
   }
 
   function handleImage(file?: File) {
@@ -83,7 +130,7 @@ export default function Home() {
   }
 
   function exportFields() {
-    const rows = [["اسم الحقل","المحصول","المساحة","صحة المحصول","رطوبة التربة","الحرارة","pH"], ...fields.map((f) => [f.name,f.crop,f.area,String(f.health),String(f.moisture),String(f.temperature),String(f.ph)])];
+    const rows = [["اسم الحقل","المحصول","المساحة","صحة المحصول","رطوبة التربة","الحرارة","pH","عدد نقاط الحدود"], ...fields.map((f) => [f.name,f.crop,f.area,String(f.health),String(f.moisture),String(f.temperature),String(f.ph),String(f.coords?.length ?? 0)])];
     const csv = "\uFEFF" + rows.map((row) => row.join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
     const link = document.createElement("a"); link.href = url; link.download = "nabta-fields.csv"; link.click(); URL.revokeObjectURL(url);
@@ -127,9 +174,9 @@ export default function Home() {
 
         <div className="dashboard-grid">
           <section className="map-panel panel">
-            <div className="map-top-search"><Search size={16}/><input placeholder="ابحث عن موقع أو حقل..." /></div>
-            <FarmMap activeField={selectedId} onSelectField={setSelectedId}/>
-            <div className="map-label"><span className="live-dot"/> خريطة تجريبية · OpenStreetMap</div>
+            <div className="map-top-search"><Search size={16}/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="ابحث عن موقع أو حقل..." /></div>
+            <FarmMap activeField={selectedId} fields={fields} onSelectField={setSelectedId} onCreateField={createFieldFromMap}/>
+            <div className="map-label"><span className="live-dot"/> صور أقمار صناعية / OpenStreetMap</div>
             <div className="map-selected-card">
               <div className="selected-head"><span className="crop-tag">{selected.crop}</span><b>{selected.name}</b><span className="health-dot"/></div>
               <div className="selected-area"><span>المساحة</span><b>{selected.area}</b></div>
